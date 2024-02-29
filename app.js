@@ -24,7 +24,10 @@ app.get('/api/products/:productId', (req, res) => {
     res.json(singleProduct)
 })
 
-
+app.get('/api/products/:productId/reviews/:reviewId', (req,res) => {
+    console.log(req.params)
+    res.send('jello')
+})
 
 app.listen(5000, () => {
     console.log('Server up')
