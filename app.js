@@ -1,30 +1,20 @@
 const express = require('express')
-//we need to use the absolute path to get a file, so we will use a builtin package
-const path = require('path')
-
-//now we invoke express and save it to a var
 const app = express()
 
-//setup static and middleware
-app.use(express.static('./public'))
+const {products} = require('./data')
 
-app.get('/', (req,res) => {
-    res.sendFile(path.resolve(__dirname,'./navbar-app/index.html'))
+app.get('/', (req, res) => {
+    res.send('<h1>Home Page</h1><a href="/api/products">Products</a>')
 })
 
-
-app.get('*', (req, res) => {
-    res.status(404).send('<h1>resource not found</h1>')
+app.get('/api/products', (req, res) => {
+    const newProduct = products.map((product) => {
+        const {id, name, image} = product
+        return {id, name, image}
+    })
+    res.json(newProduct)
 })
 
 app.listen(5000, () => {
-    console.log('server listening on port 5000...')
+    console.log('Server up')
 })
-
-// methods we are going to use the most
-// app.get
-// app.post
-// app.delete
-// app.all - works with all of the above
-// app.use - used for middleware
-// app.listen
