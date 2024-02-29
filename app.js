@@ -15,6 +15,17 @@ app.get('/api/products', (req, res) => {
     res.json(newProduct)
 })
 
+app.get('/api/products/:productId', (req, res) => {
+    const {productId} = req.params
+    const singleProduct = products.find((product) => product.id === Number(productId))
+    if(!singleProduct) {
+        return res.status(404).send('Product does not exist!')
+    }
+    res.json(singleProduct)
+})
+
+
+
 app.listen(5000, () => {
     console.log('Server up')
 })
