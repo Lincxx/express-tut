@@ -1,14 +1,18 @@
 const express = require('express')
 const app = express()
 const logger = require('./logger')
+const authorize = require('./authorize')
 
 //middleware is everywhere in express apps. One could argue, that express apps are nothing but middleware
 //pattern
 // req => middleware => res
 
 //app.use is invoking the logger, remember order matters keep above the routes.
-app.use('/api',logger)
+//app.use('/api',logger)
 //with the /api - this will apply the middleware to the api routes only
+
+//to use multiple middleware. we must put them into an array, they run in order
+app.use([logger, authorize])
 
 app.get('/',  (req, res) => {
 
@@ -25,6 +29,7 @@ app.get('/api/products', (req, res) => {
 })
 
 app.get('/api/items', (req, res) => {
+    console.log(req.user)
     res.send('Items')
 })
 
