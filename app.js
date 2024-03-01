@@ -11,6 +11,9 @@ const authorize = require('./authorize')
 //app.use('/api',logger)
 //with the /api - this will apply the middleware to the api routes only
 
+// 1. app.use vs route
+// 2. options - our own / express / 3rd party
+
 //to use multiple middleware. we must put them into an array, they run in order
 app.use([logger, authorize])
 
@@ -28,10 +31,16 @@ app.get('/api/products', (req, res) => {
     res.send('Products')
 })
 
-app.get('/api/items', (req, res) => {
-    console.log(req.user)
-    res.send('Items')
-})
+// app.get('/api/items', (req, res) => {
+//     console.log(req.user)
+//     res.send('Items')
+// })
+
+//we can inject the middleware
+// app.get('/api/items', [logger, authorize], (req, res) => {
+//     console.log(req.user)
+//     res.send('Items')
+// })
 
 app.listen(5000, () => {
     console.log('Server up')
