@@ -1,25 +1,31 @@
 const express = require('express')
 const app = express()
+const logger = require('./logger')
 
 //middleware is everywhere in express apps. One could argue, that express apps are nothing but middleware
 //pattern
 // req => middleware => res
 
-const logger  = (req, res, next) => {
-    const method = req.method;
-    const url = req.url
-    const time = new Date().getFullYear()
-    console.log(method, url, time)
-    next()
-}
+//app.use is invoking the logger, remember order matters keep above the routes.
+app.use('/api',logger)
+//with the /api - this will apply the middleware to the api routes only
 
-app.get('/', logger, (req, res) => {
+app.get('/',  (req, res) => {
 
     res.send('Home')
 })
 
 app.get('/about', (req, res) => {
     res.send('About')
+})
+
+app.get('/api/products', (req, res) => {
+
+    res.send('Products')
+})
+
+app.get('/api/items', (req, res) => {
+    res.send('Items')
 })
 
 app.listen(5000, () => {
