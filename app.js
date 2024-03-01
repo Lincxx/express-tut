@@ -29,6 +29,29 @@ app.get('/api/products/:productId/reviews/:reviewId', (req,res) => {
     res.send('jello')
 })
 
+app.get('/api/v1/query', (req, res) => {
+    console.log(req.query)
+    const {search, limit} = req.query
+    let sortedProducts = [...products]
+
+    if(search) {
+        sortedProducts = sortedProducts.filter((product)=> {
+            return product.name.startsWith(search)
+        })
+    }
+
+    if(limit) {
+        sortedProducts = sortedProducts.slice(0,Number(limit))
+    }
+
+    if(sortedProducts.length < 1) {
+        //res.status(200).send("no product matched")
+        return res.status(200).json({success:true, data:[]})
+    }
+
+    return res.status(200).json(sortedProducts)
+})
+
 app.listen(5000, () => {
     console.log('Server up')
 })
