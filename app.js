@@ -1,46 +1,44 @@
 const express = require('express')
 const app = express()
-const logger = require('./logger')
-const authorize = require('./authorize')
+let {people} = require('./data')
 
-//middleware is everywhere in express apps. One could argue, that express apps are nothing but middleware
-//pattern
-// req => middleware => res
+//static assets
+app.use(express.static('./methods-public'))
+//to get form data - parse form data
+app.use(express.urlencoded({extended:false}))
+//parse json - to get json form form data
+app.use(express.json())
 
-//app.use is invoking the logger, remember order matters keep above the routes.
-//app.use('/api',logger)
-//with the /api - this will apply the middleware to the api routes only
-
-// 1. app.use vs route
-// 2. options - our own / express / 3rd party
-
-//to use multiple middleware. we must put them into an array, they run in order
-app.use([logger, authorize])
-
-app.get('/',  (req, res) => {
-
-    res.send('Home')
+app.get('/api/people',  (req, res) => {
+    res.status(200).json({success: true, data: people})
 })
 
-app.get('/about', (req, res) => {
-    res.send('About')
+app.post('/api/people', (req, res) => {
+    const {name} = req.body
+    if(!name) {
+        return res.status(400).json({success:false,msg:"please provide name value"})
+    }
+    //return 201, for a POST request that was successful
+    res.status(201).json({success:true, person:name})
 })
 
-app.get('/api/products', (req, res) => {
+app.post('/api/postman/people', (req, res) => {
+    const {name} = req.body
+    if(!name) {
+        return res.status(400).json({success:false,msg:"please provide name value"})
+    }
 
-    res.send('Products')
+    res.status(201).json({success:true, data:[...people, name]})
 })
 
-// app.get('/api/items', (req, res) => {
-//     console.log(req.user)
-//     res.send('Items')
-// })
+app.post('/login', (req, res) => {
+    const {name}  = req.body
+    if (name) {
+        return res.status(200).send(`Welcome: ${name}`)
+    }
+    return res.status(401).send("please send credentials")
 
-//we can inject the middleware
-// app.get('/api/items', [logger, authorize], (req, res) => {
-//     console.log(req.user)
-//     res.send('Items')
-// })
+})
 
 app.listen(5000, () => {
     console.log('Server up')
