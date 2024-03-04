@@ -53,7 +53,7 @@ app.put('/api/people/:id', (req, res)=>{
     console.log(person)
 
     if(!person) {
-        return res.status(400).json({success:false,msg:"no person found"})
+        return res.status(404).json({success:false,msg:"no person found"})
     }
 
     //update
@@ -63,6 +63,25 @@ app.put('/api/people/:id', (req, res)=>{
         }
         return person
     })
+
+    return res.status(200).json({success:true,date:newPeople})
+})
+
+app.delete('/api/people/:id', (req, res) => {
+    const {id} = req.params
+    if(!id) {
+        return res.status(400).json({success:false,msg:"must enter in a valid id "})
+    }
+
+    //find
+    const person = people.find((person) => person.id === Number(id))
+
+    if(!person) {
+        return res.status(404).json({success:false,msg:"no person found"})
+    }
+
+    //delete person
+    const newPeople = people.filter((person) => person.id !== Number(id))
 
     return res.status(200).json({success:true,date:newPeople})
 })
