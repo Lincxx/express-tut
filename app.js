@@ -40,6 +40,33 @@ app.post('/login', (req, res) => {
 
 })
 
+//PUT - updating data
+app.put('/api/people/:id', (req, res)=>{
+    const {id} = req.params
+    const {name} = req.body
+    if(!id) {
+        return res.status(400).json({success:false,msg:"no person found"})
+    }
+
+    //find
+    const person = people.find((person) => person.id === Number(id))
+    console.log(person)
+
+    if(!person) {
+        return res.status(400).json({success:false,msg:"no person found"})
+    }
+
+    //update
+    const newPeople = people.map(person => {
+        if (person.id === Number(id)) {
+            person.name = name
+        }
+        return person
+    })
+
+    return res.status(200).json({success:true,date:newPeople})
+})
+
 app.listen(5000, () => {
     console.log('Server up')
 })
